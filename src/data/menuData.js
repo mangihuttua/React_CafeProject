@@ -1,13 +1,3 @@
-import latte from "../assets/images/menuImages/latte.jpg";
-import espresso from "../assets/images/menuImages/espresso.jpg";
-import cappuccino from "../assets/images/menuImages/cappuccino.jpg";
-import americano from "../assets/images/menuImages/americano.jpg";
-import croissant from "../assets/images/menuImages/croissant.jpg";
-import cheesecake from "../assets/images/menuImages/cheesecake.jpg";
-import pancake from "../assets/images/menuImages/pancake.jpg";
-import salad from "../assets/images/menuImages/salad.jpg";
-import lemontea from "../assets/images/menuImages/lemontea.jpg";
-
 const menuData = [
   {
     id: 1,

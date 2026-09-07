@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import menuData from "../data/menuData";
 import Container from "../components/Container/Container";
 import Button from "../components/Button/Button";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import {getMenus} from "../services/api";
 
 function MenuDetail() {
 

@@ -1,24 +1,59 @@
 import Container from "../Container/Container";
 import SectionTitle from "../SectionTitle/SectionTitle";
-import menuData from "../../data/menuData";
 import MenuCard from "../MenuCard/MenuCard";
 import SearchBar from "../SearchBar/SearchBar";
 import Pagination from "../Pagination/Pagination";
-import  { useState } from "react";
+import  { useState,  useEffect } from "react";
+import {getMenus} from "../../services/api";
 
 function Menu() {
+
+  const [menus, setMenus] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All"); // Kategori List
   const [searchTerm, setSearchTerm] = useState(""); // Search 
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
   const categories = [
   "All",
-  ...new Set(menuData.map((menu) => menu.category)),
+  "Coffee",
+  "Pastry",
+  "Dessert",
     ]
+  
+   // Ambil data dari API
+  useEffect(() => {
 
-  const filteredMenu = menuData.filter((menu) => {
+    const fetchMenus = async () => {
+
+      try {
+
+        const data = await getMenus();
+
+        setMenus(data);
+
+      } catch (error) {
+
+        console.error(error);
+        setError("Gagal mengambil data menu.");
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+    fetchMenus();
+
+  }, []);
+  
+  const filteredMenu = menus.filter((menu) => {
   const matchCategory =
     selectedCategory === "All" ||
     menu.category === selectedCategory;
@@ -72,6 +107,20 @@ function Menu() {
           ))}
         </div>
 
+      {/* Loading */}
+        {loading && (
+          <p className="text-center mt-12">
+            Loading menu...
+          </p>
+        )}
+
+
+        {/* Error */}
+        {error && (
+          <p className="text-center text-red-500 mt-12">
+            {error}
+          </p>
+        )}
 
         {/* Menu */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">

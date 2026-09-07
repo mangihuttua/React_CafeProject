@@ -28,7 +28,7 @@ function MenuCard({
                     hover:-translate-y-2
                     transition-all duration-300 ">
 
-      <img src={image} alt={title} className="w-full h-52 object-cover"/>
+      <img src={`/images/menuImages/${image}`} alt={title} className="w-full h-52 object-cover"/>
 
       <div className="flex flex-col grow p-6">
         <span className="inline-block bg-amber-100 text-amber-700 text-sm font-medium px-3 py-1 rounded-full mb-3">
