@@ -48,7 +48,7 @@ function Cart() {
               <div className="md:hidden">
 
                 <div className="flex gap-4">
-                  <img src={item.image} alt={item.title}
+                  <img src={`/images/menuImages/${item.image}`} alt={item.title}
                     className="w-24 h-24 rounded-lg object-cover" />
 
                   <div className="flex-1">
@@ -114,7 +114,7 @@ function Cart() {
 
                 {/* PRODUCT */}
                 <div className="flex items-center gap-4">
-                  <img src={item.image} alt={item.title}
+                  <img src={`/images/menuImages/${item.image}`} alt={item.title}
                     className="w-24 h-24 rounded-lg object-cover"/>
 
                   <div>

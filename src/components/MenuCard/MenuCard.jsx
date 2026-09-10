@@ -41,7 +41,7 @@ function MenuCard({
 
         <p className="text-gray-600 mt-3 grow">
           {description} 
-          <Link to={"/menu/${id}"}
+          <Link to={`/menu/${id}`}
                 className="mt-3 text-blue-600 font-ssemibold hover:text-orange-600">
             View Details
           </Link>
