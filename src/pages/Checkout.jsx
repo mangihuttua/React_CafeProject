@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 import { useCart } from "../context/CartContext";
 import Button from "../components/Button/Button";
+import { createOrder } from "../services/api";
 
 
 function Checkout() {
@@ -11,6 +12,7 @@ function Checkout() {
   const {
     cart,
     totalPrice,
+    clearCart,
   } = useCart();
 
 // Form 
@@ -27,6 +29,7 @@ function Checkout() {
   // ERROR STATE 
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   // HANDLE INPUT
@@ -81,7 +84,7 @@ function Checkout() {
 
   // PLACE ORDER 
 
- const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
 
   const isValid = validateForm();
@@ -89,6 +92,49 @@ function Checkout() {
   if (!isValid) {
     return;
   }
+
+  const orderData = {
+  customer_name: formData.name,
+  phone: formData.phone,
+  order_type:
+    formData.orderType === "dine-in"
+      ? "Dine In"
+      : "Take Away",
+  table_number:
+    formData.orderType === "dine-in"
+      ? formData.tableNumber
+      : null,
+  note: formData.notes,
+  items: cart.map((item) => ({
+    menu_id: item.id,
+    quantity: item.quantity,
+  })),
+};
+
+try {
+  setIsSubmitting(true);
+
+  const result = await createOrder(orderData);
+
+  console.log("Order berhasil:", result);
+
+  // lanjut SweetAlert di sini
+
+} catch (error) {
+  console.error("Order gagal:", error);
+
+  Swal.fire({
+    title: "Order Gagal",
+    text: error.message || "Terjadi kesalahan saat membuat order.",
+    icon: "error",
+    confirmButtonColor: "#9a3412",
+  });
+  return;
+} finally {
+  setIsSubmitting(false);
+}
+
+  clearCart();
 
   // Rincian item pesanan
   const orderItems = cart
@@ -364,7 +410,7 @@ function Checkout() {
             </div>
 
             <Button  variant="secondary" type="submit">
-               Order
+               {isSubmitting ? "Memproses..." : "Order"}
             </Button>
 
           </form>
