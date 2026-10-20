@@ -7,10 +7,11 @@ import Menu from "../components/Menu/Menu";
 import MenuDetail from "../pages/MenuDetail";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
+import Login from "../pages/Login";
 
 function AppRoutes() {
   return (
-        <HashRouter>
+    <HashRouter>
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
@@ -19,7 +20,8 @@ function AppRoutes() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/menu/:id" element={<MenuDetail />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />         
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </HashRouter>
