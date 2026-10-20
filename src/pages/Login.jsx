@@ -82,15 +82,21 @@ function Login() {
       // Simpan token dan data user melalui AuthContext
       login(result);
 
-      // Semua role ke halaman Home.
-      navigate("/");
-    } catch (error) {
-      setApiError(
-        error.message ||
-          "Login gagal. Silakan coba kembali."
-      );
-    } finally {
-      setIsSubmitting(false);
+        if (result.data.role === "admin") {
+          navigate("/admin", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+        
+    }
+      catch (error) {
+        setApiError(
+          error.message ||
+            "Login gagal. Silakan coba kembali."
+        );
+    } 
+      finally {
+        setIsSubmitting(false);
     }
   };
 

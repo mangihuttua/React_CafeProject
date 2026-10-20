@@ -8,6 +8,8 @@ import MenuDetail from "../pages/MenuDetail";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import Login from "../pages/Login";
+import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
+import AdminDashboard from "../pages/AdminDashboard";
 
 function AppRoutes() {
   return (
@@ -23,6 +25,12 @@ function AppRoutes() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
         </Route>
+
+        {/* Halaman khusus admin */}
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Route>
+
       </Routes>
     </HashRouter>
   );
