@@ -13,23 +13,49 @@ import AdminDashboard from "../pages/AdminDashboard";
 
 function AppRoutes() {
   return (
-    <HashRouter>
+    // <HashRouter>
+    //   <Routes>
+    //     <Route element={<MainLayout />}>
+    //       <Route path="/" element={<Home />} />
+    //       <Route path="/about" element={<About />} />
+    //       <Route path="/contact" element={<Contact />} />
+    //       <Route path="/menu" element={<Menu />} />
+    //       <Route path="/menu/:id" element={<MenuDetail />} />
+    //       <Route path="/cart" element={<Cart />} />
+    //       <Route path="/checkout" element={<Checkout />} />
+    //       <Route path="/login" element={<Login />} />
+    //     </Route>
+
+    //     {/* Halaman khusus admin */}
+    //   <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+    //     <Route path="/admin" element={<AdminDashboard />} />
+    //   </Route>
+
+    //   </Routes>
+    // </HashRouter>
+
+     <HashRouter>
       <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/menu/:id" element={<MenuDetail />} />
+         <Route element={<MainLayout />}>
+        {/* Halaman publik */}
+        <Route path="/" element={<Home />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/menu/:id" element={<MenuDetail />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Halaman yang wajib login */}
+       <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/login" element={<Login />} />
+        
         </Route>
 
-        {/* Halaman khusus admin */}
-      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-        <Route path="/admin" element={<AdminDashboard />} />
-      </Route>
+         {/* Halaman khusus admin */}
+        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+          <Route path="/admin" element={<AdminDashboard />}/>
+        </Route>
+
+        </Route>
 
       </Routes>
     </HashRouter>

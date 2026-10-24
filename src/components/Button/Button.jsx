@@ -18,9 +18,6 @@ function Button({   children,
 
                             outline:
                             "border-2 border-orange-800 text-orange-800 hover:bg-orange-800 hover:text-white",
-
-                            danger:
-                            "bg-red-600 text-white hover:bg-red-700",
                         };
 
         const className = `${baseStyle} ${variants[variant]}`;
