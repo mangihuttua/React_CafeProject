@@ -31,7 +31,7 @@ function AdminDashboard() {
   return (
     <div>
       {/* Welcome */}
-      <section className="mb-8 rounded-2xl bg-gradient-to-r from-amber-950 to-orange-800 p-6 text-white sm:p-8">
+      <section className="mb-8 rounded-2xl bg-linear-to-r from-amber-950 to-orange-800 p-6 text-white sm:p-8">
         <p className="text-sm font-medium text-amber-200">
           CAFE DELIGHT ADMINISTRATION
         </p>
@@ -57,9 +57,8 @@ function AdminDashboard() {
             const Icon = stat.icon;
 
             return (
-              <article
-                key={stat.title}
-                className="rounded-xl border border-amber-100 bg-white p-5 shadow-sm"
+              <article key={stat.title}
+                       className="rounded-xl border border-amber-100 bg-white p-5 shadow-sm"
               >
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-gray-500">
@@ -117,6 +116,7 @@ function AdminDashboard() {
               Periksa pesanan yang dibuat pelanggan.
             </p>
           </div>
+          
         </div>
       </section>
     </div>
