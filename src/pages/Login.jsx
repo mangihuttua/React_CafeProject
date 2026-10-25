@@ -1,12 +1,13 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation } from "react-router-dom";
 import { FaCoffee } from "react-icons/fa";
 import { Eye, EyeOff } from "lucide-react";
 
 import Button from "../components/Button/Button";
 import { loginUser } from "../services/authApi";
 import { useAuth } from "../context/AuthContext";
+
 
 function Login() {
   const navigate = useNavigate();
@@ -21,7 +22,9 @@ function Login() {
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  const location = useLocation();
+  const successMessage = location.state?.message;
+  
   // Menangani perubahan input
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -123,6 +126,15 @@ function Login() {
           </p>
         </div>
 
+        {successMessage && (
+        <div
+          role="status"
+          className="mb-5 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700"
+        >
+          {successMessage}
+        </div>
+        )}
+        
         {/* Pesan error dari API */}
         {apiError && (
           <div

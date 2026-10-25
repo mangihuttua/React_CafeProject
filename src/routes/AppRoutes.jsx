@@ -10,38 +10,21 @@ import Checkout from "../pages/Checkout";
 import Login from "../pages/Login";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
+import Register from "../pages/Register";
+import AdminLayout from "../layouts/AdminLayout";
 
 function AppRoutes() {
+  
   return (
-    // <HashRouter>
-    //   <Routes>
-    //     <Route element={<MainLayout />}>
-    //       <Route path="/" element={<Home />} />
-    //       <Route path="/about" element={<About />} />
-    //       <Route path="/contact" element={<Contact />} />
-    //       <Route path="/menu" element={<Menu />} />
-    //       <Route path="/menu/:id" element={<MenuDetail />} />
-    //       <Route path="/cart" element={<Cart />} />
-    //       <Route path="/checkout" element={<Checkout />} />
-    //       <Route path="/login" element={<Login />} />
-    //     </Route>
-
-    //     {/* Halaman khusus admin */}
-    //   <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-    //     <Route path="/admin" element={<AdminDashboard />} />
-    //   </Route>
-
-    //   </Routes>
-    // </HashRouter>
-
      <HashRouter>
       <Routes>
-         <Route element={<MainLayout />}>
+      <Route element={<MainLayout />}>
         {/* Halaman publik */}
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/menu/:id" element={<MenuDetail />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Halaman yang wajib login */}
        <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
@@ -52,11 +35,13 @@ function AppRoutes() {
 
          {/* Halaman khusus admin */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-          <Route path="/admin" element={<AdminDashboard />}/>
+        <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+        </Route>
+        
         </Route>
 
-        </Route>
-
+        </Route>   
       </Routes>
     </HashRouter>
   );
