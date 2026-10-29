@@ -12,6 +12,7 @@ import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
 import Register from "../pages/Register";
 import AdminLayout from "../layouts/AdminLayout";
+import AdminMenu from "../pages/AdminMenu";
 
 function AppRoutes() {
   
@@ -37,6 +38,7 @@ function AppRoutes() {
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
+        <Route path="/admin/menu" element={<AdminMenu />} />
         </Route>
         
         </Route>
