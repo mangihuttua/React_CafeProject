@@ -4,11 +4,12 @@ import { useAuth } from "../context/AuthContext";
 
 export default function AdminMenu() {
   const { token } = useAuth();
-
+ 
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState("");
-
+  const [errors, setErrors] = useState({}); // State untuk menyimpan pesan error masing -masing input 
+  const [error, setError] = useState("");  // State untuk menyimpan pesan error dari server/API   
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -17,63 +18,109 @@ export default function AdminMenu() {
     image: "",
     });
 
- const handleChange = (e) => {
-  const { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-        setFormData((prev) => ({
-            ...prev,
+    setFormData((prev) => ({
+        ...prev,
         [name]: value,
-     }));
+    }));
+
+    setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+    }));
     };
 
   
-  
-    const handleSubmit = async (e) => {
-    e.preventDefault();
+    const validateForm = () => {
+        const newErrors = {};
 
-    setSaving(true);
-    setError("");
-    setSuccess("");
-
-    try {
-        const menuData = new FormData();
-
-        menuData.append("title", formData.title.trim());
-        menuData.append("description", formData.description);
-        menuData.append("price", String(Number(formData.price)));
-        menuData.append("category", formData.category.trim());
-
-        // Kirim gambar hanya jika admin memilih file baru.
-        if (formData.image instanceof File) {
-        menuData.append("image", formData.image);
+        if (!formData.title.trim()) {
+            newErrors.title = "Nama menu wajib diisi.";
         }
 
-        if (editingId === null) {
-        await createMenu(menuData, token);
-        setSuccess("Menu berhasil ditambahkan!");
-        } else {
-        await updateMenu(editingId, menuData, token);
-        setSuccess("Menu berhasil diperbarui!");
+        if (!formData.description.trim()) {
+            newErrors.description = "Deskripsi menu wajib diisi.";
         }
 
-        setFormData({
-        title: "",
-        description: "",
-        price: "",
-        category: "Coffee",
-        image: "",
-        });
+        const price = Number(formData.price);
 
-        setEditingId(null);
-        setShowForm(false);
+        if (
+            formData.price === "" ||
+            !Number.isFinite(price) ||
+            price <= 0
+        ) {
+            newErrors.price = "Harga harus lebih dari 0.";
+        }
 
-        const data = await getMenus();
-        setMenus(data);
-    } catch (err) {
-        setError(err.message || "Gagal menyimpan menu");
-    } finally {
-        setSaving(false);
-    }
+        if (!formData.category) {
+            newErrors.category = "Kategori wajib dipilih.";
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
+
+
+   
+
+  const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        setError("");
+        setSuccess("");
+
+        // Jalankan validasi
+        const isValid = validateForm();
+
+        if (!isValid) {
+            return;
+        }
+
+        setSaving(true);
+
+        try {
+            const menuData = new FormData();
+
+            menuData.append("title", formData.title.trim());
+            menuData.append("description", formData.description.trim());
+            menuData.append("price", String(Number(formData.price)));
+            menuData.append("category", formData.category.trim());
+
+            if (formData.image instanceof File) {
+                menuData.append("image", formData.image);
+            }
+
+            if (editingId === null) {
+                await createMenu(menuData, token);
+                setSuccess("Menu berhasil ditambahkan!");
+            } else {
+                await updateMenu(editingId, menuData, token);
+                setSuccess("Menu berhasil diperbarui!");
+            }
+
+            setFormData({
+                title: "",
+                description: "",
+                price: "",
+                category: "",
+                image: "",
+            });
+
+            setErrors({});
+            setEditingId(null);
+            setShowForm(false);
+
+            const data = await getMenus();
+            setMenus(data);
+
+        } catch (err) {
+            setError(err.message || "Gagal menyimpan menu.");
+        } finally {
+            setSaving(false);
+        }
     };
 
 
@@ -93,7 +140,7 @@ export default function AdminMenu() {
             title: menu.title || "",
             description: menu.description || "",
             price: menu.price || "",
-            category: menu.category || "Coffee",
+            category: menu.category || "",
             image: menu.image || "",
         });
 
@@ -128,7 +175,7 @@ export default function AdminMenu() {
   const [editingId, setEditingId] = useState(null);
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+
 
   useEffect(() => {
     const fetchMenus = async () => {
@@ -153,14 +200,8 @@ export default function AdminMenu() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="p-6">
-        <p className="text-red-600">{error}</p>
-      </div>
-    );
-  }
 
+  
   return (
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -183,9 +224,8 @@ export default function AdminMenu() {
         >
           + Add Menu
         </button>
-
-      </div>
-
+        </div>
+       
       <div className="overflow-x-auto rounded-xl bg-white shadow">
         <table className="w-full text-left">
         <thead className="bg-amber-100 text-amber-900">
@@ -221,26 +261,50 @@ export default function AdminMenu() {
                           {editingId === null ? "Add New Menu" : "Edit Menu"}
                     </h2>
 
-                    <form onSubmit={handleSubmit} className="grid w-full grid-cols-1 gap-4 md:grid-cols-2" >
+                    <form onSubmit={handleSubmit} className="grid w-full grid-cols-1 gap-4 md:grid-cols-2" noValidate >
                     <div>
                         <label className="mb-1 block font-medium"> Menu Name </label>
 
-                        <input type="text" name="title" value={formData.title} onChange={handleChange} required
-                               className="w-full rounded-lg border p-3" placeholder="contoh: Vanilla Latte"/>
+                        <input type="text" name="title" value={formData.title} onChange={handleChange} 
+                                placeholder="contoh: Vanilla Latte"/>
+                            {errors.title && (
+                            <p className="mt-1 text-sm text-red-600">
+                                {errors.title}
+                            </p>
+                            )}
                     </div>
 
                     <div>
                         <label className="mb-1 block font-medium"> Price </label>
 
                         <input type="number" name="price" value={formData.price}onChange={handleChange} min="1" required
-                               className="w-full rounded-lg border p-3" placeholder="contoh: 35000"/>
+                               className={`w-full rounded-lg border p-3 ${errors.price ? "border-red-500" : "border-gray-300"}`}
+                               placeholder="contoh: 35000"/>
+                        {errors.price && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors.price}
+                        </p>
+                        )}
                     </div>
 
                     <div>
                         <label className="mb-1 block font-medium"> Category </label>
 
-                        <input type="text" name="category" value={formData.category} onChange={handleChange} required
-                               className="w-full rounded-lg border p-3" placeholder="contoh: Coffee"/>
+                       <select name="category"
+                               value={formData.category}
+                               onChange={handleChange}
+                               className={`w-full rounded-lg border p-3 ${errors.category ? "border-red-500" : "border-gray-300"}`}
+                        >
+                            <option value="">Pilih Kategori</option>
+                            <option value="Coffee">Coffee</option>
+                            <option value="Pastry">Pastry</option>
+                            <option value="Dessert">Dessert</option>
+                        </select>
+                        {errors.category && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors.category}
+                        </p>
+                        )}
                     </div>
 
                     <div>
@@ -248,9 +312,9 @@ export default function AdminMenu() {
 
                     <input type="file" name="image" accept="image/png,image/jpeg,image/jpg"
                            onChange={handleImageChange}
-                           className="w-full rounded-lg border p-3
+                           className={`w-full rounded-lg border p-3 ${errors.image ? "border-red-500" : "border-gray-300"}
                                       file:rounded-lg file:bg-amber-100 file:px-4 file:py-2
-                                    file:text-amber-900 hover:file:bg-amber-200 file:font-sans"
+                                    file:text-amber-900 hover:file:bg-amber-200 file:font-sans`}
                     />
                     {formData.image instanceof File && (
                         <img
@@ -263,15 +327,20 @@ export default function AdminMenu() {
                     <p className="mt-1 text-sm text-gray-500">
                         Format yang didukung: PNG, JPG, JPEG.
                     </p>
-
+                    
                     </div>
 
                     <div className="md:col-span-2">
                         <label className="mb-1 block font-medium"> Description </label>
 
                         <textarea name="description" value={formData.description} onChange={handleChange} required
-                                  rows={4} className="w-full rounded-lg border p-3" placeholder="Deskripsi menu"
+                                  rows={4} className={`w-full rounded-lg border p-3 ${errors.description ? "border-red-500" : "border-gray-300"}`} placeholder="Deskripsi menu"
                         />
+                        {errors.description && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors.description}
+                        </p>
+                        )}
                     </div>
 
                     <div className="flex gap-3 md:col-span-2">
