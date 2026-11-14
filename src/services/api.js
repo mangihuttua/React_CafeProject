@@ -85,3 +85,59 @@ export const createOrder = async (orderData) => {
 
   return await readResponse(response);
 };
+
+
+// GET ALL ORDERS
+export const getOrders = async (token) => {
+  const response = await fetch(`${API_URL}/orders`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Gagal mengambil pesanan");
+  }
+
+  return result.data;
+};
+
+// GET ORDER DETAIL
+export const getOrderById = async (id, token) => {
+  const response = await fetch(`${API_URL}/orders/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Gagal mengambil detail pesanan");
+  }
+
+  return result.data;
+};
+
+// UPDATE ORDER STATUS
+export const updateOrderStatus = async (id, status, token) => {
+  const response = await fetch(`${API_URL}/orders/${id}/status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Gagal mengubah status pesanan");
+  }
+
+  return result;
+};
+
